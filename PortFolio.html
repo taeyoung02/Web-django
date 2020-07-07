@@ -15,6 +15,19 @@
 	<p>my first paragraph</p>
 
 	<a href="https://www.naver.com">let's go</a>
+
+	<input type="text" name="name" id="user_name" onkeyup="doSomething()">
+	<button type="button" onclick="alert('abc')">Say hi</button>
+
 	<hr/>
+
 	<img src="https://thumbs.dreamstime.com/b/woman-praying-free-birds-to-nature-sunset-background-woman-praying-free-birds-enjoying-nature-sunset-99680945.jpg">
+	<script>
+	function doSomething(){
+		var name = document.getElementById("user_name").value;
+		document.getElementsById("hello").innerHTML="hi" + name + "님"
+		}
+	</script>
+	
 </body>
+</html>
