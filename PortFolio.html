@@ -13,7 +13,7 @@
 	</nav>
 	<h1>my first</h1>
 	<p>my first paragraph</p>
-
+	<h3 id="say_to_somebody"></h3>
 	<a href="https://www.naver.com">let's go</a>
 
 	<input type="text" name="name" id="user_name" onkeyup="doSomething()">
@@ -25,8 +25,11 @@
 	<script>
 	function doSomething(){
 		var name = document.getElementById("user_name").value;
-		document.getElementsById("hello").innerHTML="hi" + name + "님"
-		}
+		//document=이 문서  getElementById = 이름으로 갖고옴    
+		//이문서에서 user_name을 갖고있는 것(id) 의 value를 가져와서 name에 저장
+		document.getElementById("say_to_somebody").innerHTML = "hi " + name + "님"
+		} //say_to_somebody가 이름인것(h3의 id)를 가져와서 거기안에 씀(hi + name +님)
+		//그래서 h3에 우측값이 입력되어 화면에 표시됨
 	</script>
 	
 </body>
