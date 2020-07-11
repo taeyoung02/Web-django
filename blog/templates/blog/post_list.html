@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+</head>
+<body>
+<h1>Blog</h1>
+
+<!--for문 -->
+{% for p in object_list %}
+<h2>{{p}}</h2>
+<h4>{{p.created}} by {{p.author}}</h4>
+<h3>{{ p.content }}</h3>
+{% endfor %}
+</body>
+</html>
