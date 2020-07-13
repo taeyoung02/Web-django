@@ -8,6 +8,8 @@ class Post(models.Model):
     title = models.CharField(max_length=30)  # 길이제한 필요
     # 글 내용
     content = models.TextField()
+
+    head_image=models.ImageField(upload_to='blog/%Y/%m/%d/', blank=True)
     # 언제 작성햇는데
     created = models.DateTimeField()
     # 작성자 누군데
