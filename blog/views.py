@@ -1,17 +1,33 @@
 from django.shortcuts import render
 from .models import Post  # . = 지금 폴더안
 # post = models.py의 post가져옴
-from django.views.generic import ListView
-
-
-class PostList(ListView):
-    model = Post
+from django.views.generic import ListView, DetailView
 
 
 # 밑에거 필요없이 위에 2줄로 가능
 
-def get_queryset(self):
-    return Post.objects.order_by('-created')
+class PostList(ListView):
+    model = Post
+
+    def get_queryset(self):
+        return Post.objects.order_by('-created')
+
+
+class PostDetail(DetailView):
+    model = Post
+
+
+# def post_detail(request, pk):
+#     blog_post = Post.objects.get(pk=pk)
+#
+#     return render(
+#         request,
+#         'blog/post_detail.html',
+#         {
+#             'blog_post': blog_post,
+#         }
+#     )
+
 # Create your views here.
 
 # def index(request):
