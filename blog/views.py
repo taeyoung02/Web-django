@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Post  # . = 지금 폴더안
+from .models import Post, Category  # . = 지금 폴더안
 # post = models.py의 post가져옴
 from django.views.generic import ListView, DetailView
 
@@ -12,10 +12,15 @@ class PostList(ListView):
     def get_queryset(self):
         return Post.objects.order_by('-created')
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(PostList, self).get_context_data(**kwargs)
+        context['category_list'] = Category.objects.all()
+        context['posts_without_category'] = Post.objects.filter(category=None).count()
+        # category가 none인것만 걸러서 왼쪽에 갯수 저장
+        return context
 
 class PostDetail(DetailView):
     model = Post
-
 
 # def post_detail(request, pk):
 #     blog_post = Post.objects.get(pk=pk)

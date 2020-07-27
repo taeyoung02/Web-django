@@ -15,10 +15,12 @@
     </p>
 
     <!-- Date/Time -->
-    <p>Posted on January 1, 2019 at 12:00 PM</p>
+    <p>Posted on {{ object.created }}</p>
 
     <!-- Preview Image -->
+    {% if object.head_image %}
     <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+    {% endif %}
 
     <!-- Post Content -->
     {{ object.content }}
