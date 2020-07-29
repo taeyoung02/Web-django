@@ -5,9 +5,17 @@ from django.contrib.auth.models import User  # User 객체 제공
 class Category(models.Model):
     name = models.CharField(max_length=25, unique=True)
     description = models.TextField(blank=True)
+    # 이미 확보된 데이터로부터 유효한 URL을 만드는 방법
+    slug = models.SlugField(unique=True, allow_unicode=True)
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return '/blog/category/{}/'.format(self.slug)
+
+    class Meta:
+        verbose_name_plural = 'categories'
 
 # Post는 모델의 이름입니다.
 # models은 Post가 장고 모델임을 의미합니다. 이 코드 때문에 장고는 Post가 데이터베이스에 저장되어야 한다고 알게 됩니다.
