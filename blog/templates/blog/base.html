@@ -14,8 +14,7 @@
 </head>
 <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary" id="navbar">
     <div class="container">
-        <a href="../" class="navbar-brand">고객 이탈 분석</a>
-        <a href="../" class="navbar-toggle">Blog</a>
+        <a href="http://127.0.0.1:8000/blog" class="navbar-brand">고객 이탈 분석</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -63,8 +62,21 @@
             {% endblock %}
 
         </div>
+
         <!-- Sidebar Widgets Column -->
-        <div class="col-md-4" id="side-div">
+        <div class="col-md-4">
+            <div class="card my-4">
+                <h5 class="card-header">Log in</h5>
+                <div class="card-body">
+                    <div class="input-group">
+                        <input type="text" class="from-control" placeholder="ID">
+                        <input type="text" class="from-control" placeholder="password">
+                        <span class="input-group-append">
+                            <button class="btn btn-secondary" type="button">log in</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
             <!-- Search Widget -->
             <div class="card my-4">
                 <h5 class="card-header">Search</h5>
@@ -86,11 +98,11 @@
                             <ul class="list-unstyled mb-0">
                                 {% for category in category_list %}
                                     <li>
-                                        <a href="#">{{ category.get_absolute_url }} ({{ category.post_set.count }})</a>
+                                         <a href="{{ category.get_absolute_url }}">{{ category.name }} ({{ category.post_set.count }})</a>
                                     </li>
                                 {% endfor %}
                                 <li>
-                                    <a href="#">미분류 ({{ posts_without_category }})</a>
+                                    <a href="/blog/category/_none/">미분류 ({{ posts_without_category }})</a>
                                 </li>
                             </ul>
                         </div>

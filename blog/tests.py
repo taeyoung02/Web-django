@@ -52,16 +52,17 @@ class TestModel(TestCase):
 class Testview(TestCase):
     def setUp(self):
         self.client = Client()  # client가 브라우저 역할 대신
-        self.author_000 = User.objects.create(username='smith', password='no')
+        self.author_000 = User.objects.create_user(username='smith', password='no')
 
     def check_navbar(self, soup):
         navbar = soup.find("div", id='navbar')
-        self.assertIn("Blog", navbar.text)
+        self.assertIn("Github", navbar.text)
         self.assertIn("About me", navbar.text)
 
     def check_right_side(self, soup):
         # category card 에서
         category_card = soup.find('div', id='category-card')
+        print(category_card)
         # 미분류(1),정치/사회(1) 있어야함
         self.assertIn('미분류 (1)', category_card.text)
         self.assertIn('정치/사회 (1)', category_card.text)
@@ -152,6 +153,21 @@ class Testview(TestCase):
         self.assertIn(post_000.content, main.text)
 
         self.check_right_side(soup)
+
+        # login 한 경우
+        # post author == login사용자 이면 edit버튼 있다
+        login_sucess = self.client.login(username='smith', password='no')
+        self.assertTrue(login_sucess)
+
+        response = self.client.get(post_000_url)  # post_000.get_absolute_url()의 소스를 가져오겠다
+        self.assertEqual(response.status_code, 200)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main = soup.find('div', id='main-div')
+
+        self.assertEqual(post_000.author, self.author_000)
+        self.assertIn('EDIT', main.text)
+
 
     def test_post_list_byCategory(self):
         category_politics = create_category(name='정치/사회')

@@ -8,6 +8,12 @@
     <!-- Title -->
     <h1 class="mt-4">{{ object.title }}</h1>
 
+    {% if object.category %}
+        <span class="badge badge-primary float-right">{{ object.category }}</span>
+    {% else %}
+        <span class="badge badge-primary float-right">미분류</span>
+    {% endif %}
+
     <!-- Author -->
     <p class="lead">
         by
@@ -15,11 +21,14 @@
     </p>
 
     <!-- Date/Time -->
-    <p>Posted on {{ object.created }}</p>
-
+    <p>Posted on {{ object.created }}
+        {% if request.user == object.author %}
+            <button type="button" class="btn btn-sm btn-outline-secondary float-right">EDIT</button>
+        {% endif %}
+    </p>
     <!-- Preview Image -->
     {% if object.head_image %}
-    <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+        <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
     {% endif %}
 
     <!-- Post Content -->
@@ -81,5 +90,4 @@
         </div>
     </div>
 
-    </div>
 {% endblock %}
