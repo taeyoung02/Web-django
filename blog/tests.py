@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
-from .models import Post, Category
+from .models import Post, Category, Comment
 from django.utils import timezone
 from django.contrib.auth.models import User
 
@@ -30,6 +30,21 @@ def create_post(title, content, author, category=None):
     return blog_post
 
 
+def create_comment(post, text='a comment', author = None):
+    if author is None:
+        author, is_created = User.objects.get_or_create(
+            username='guest',
+            password='guest',
+        )
+
+    comment = Comment.objects.create(
+        post=post,
+        text=text,
+        author=author
+    )
+
+    return comment
+
 class TestModel(TestCase):
     def setUp(self):
         self.client = Client()  # client가 브라우저 역할 대신
@@ -48,11 +63,33 @@ class TestModel(TestCase):
 
         self.assertEqual(category.post_set.count(), 1)  # Post를 post로 가져옴. category에서 post 불러옴
 
+    def test_comment(self):
+        post_000 = create_post(
+            title='The first post',
+            content='hello wolrd.',
+            author=self.author_000
+        )
+
+        self.assertEqual(Comment.objects.count(), 0)
+
+        comment0 = create_comment(
+            post=post_000
+        )
+
+        comment1 = create_comment(
+            post=post_000,
+            text='second'
+        )
+
+        self.assertEqual(Comment.objects.count(), 2)
+        self.assertEqual(post_000.comment_set.count(),2)
+
 
 class Testview(TestCase):
     def setUp(self):
         self.client = Client()  # client가 브라우저 역할 대신
         self.author_000 = User.objects.create_user(username='smith', password='no')
+        self.user_obama = User.objects.create_user(username='obama', password='no')
 
     def check_navbar(self, soup):
         navbar = soup.find("div", id='navbar')
@@ -123,6 +160,8 @@ class Testview(TestCase):
             author=self.author_000,
         )
 
+        comment0 = create_comment(post_000, text='a test comment', author=self.user_obama)
+
         post_001 = create_post(
             title='The second post',
             content='ss',
@@ -153,6 +192,12 @@ class Testview(TestCase):
         self.assertIn(post_000.content, main.text)
 
         self.check_right_side(soup)
+
+
+        # Comment
+        comments_div = main.find('div', id='comment-list')
+        self.assertIn(comment0.author.username, comments_div.text)
+        self.assertIn(comment0.text, comments_div.text)
 
         # login 한 경우
         # post author == login사용자 이면 edit버튼 있다
@@ -194,3 +239,54 @@ class Testview(TestCase):
         main = soup.find('div', id='main-div')
         self.assertNotIn('미분류', main.text)
         self.assertIn(category_politics.name, main.text)
+
+    def test_post_create(self):
+        response = self.client.get('/blog/create/')
+        self.assertNotEqual(response.status_code, 200)
+
+        self.client.login(username='smith', password='no')
+        response = self.client.get('/blog/create/')
+        self.assertEqual(response.status_code, 200)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main = soup.find('div', id='main-div')
+
+
+    def test_post_update(self):
+        post_000 = create_post(
+            title='The first post',
+            content='hello wolrd.',
+            author=self.author_000,
+        )
+
+        self.assertEqual(post_000.get_update_url(), post_000.get_absolute_url() + 'update/')
+
+        response = self.client.get(post_000.get_update_url())
+        self.assertEqual(response.status_code, 200)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main = soup.find('div', id='main-div')
+
+        #edit시 author 못바꾸게
+        self.assertNotIn('Created', main.text)
+        self.assertNotIn('Author', main.text)
+
+    def test_new_comment(self):
+        post_000 = create_post(
+            title='The first post',
+            content='hello wolrd.',
+            author=self.author_000,
+        )
+
+        response = self.client.post(
+            post_000.get_absolute_url() + 'new_comment',
+            {'text': 'A test comment for the first'},
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)  # urls.py에 구현이 안되었기때문에 404를 받음
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main = soup.find('div', id='main-div')
+
+        self.assertIn((post_000.title, main.text))
+        self.assertIn('A test comment', main.text)

@@ -10,6 +10,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <link rel="stylesheet" href="{% static 'blog/bootstrap/bootstrap.css' %}" media="screen">
     <link rel="stylesheet" href="{% static 'blog/_assets/css/custom.min.css' %}">
+    <script src="https://kit.fontawesome.com/f284a7c950.js" crossorigin="anonymous"></script>
+
 
 </head>
 <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary" id="navbar">
@@ -44,6 +46,54 @@
                 </li>
             </ul>
 
+            <ul class="nav navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                           id="download">{{ user }}<span
+                                class="caret"></span></a>
+                        <div class="dropdown-menu" aria-labelledby="download">
+                            {#                        <a class="dropdown-item" target="_blank" href="https://jsfiddle.net/bootswatch/3he50zsf/">Open#}
+                            {#                            in JSFiddle</a>#}
+                            {#                        <div class="dropdown-divider"></div>#}
+                            {#                        <a class="dropdown-item" href="../4/simplex/bootstrap.min.css" download>bootstrap.min.css</a>#}
+                            {#                        <a class="dropdown-item" href="../4/simplex/bootstrap.css" download>bootstrap.css</a>#}
+                            {#                        <div class="dropdown-divider"></div>#}
+                            {#                        <a class="dropdown-item" href="../4/simplex/_variables.scss" download>_variables.scss</a>#}
+                            <a class="dropdown-item" href="/accounts/logout/">Log out</a>
+                        </div>
+                        {% else %}
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loginModal">
+                            {# target과 modal의 id가 맞아야 #}
+                            Log in
+                        </button>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% load socialaccount %}
+
+<!-- Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">please login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <a role="button" class="btn btn-primary" href="{% provider_login_url 'google'%}"><i class="fab fa-google"></i> Log in with google</a>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
         </div>
     </div>
 </div>
@@ -65,18 +115,7 @@
 
         <!-- Sidebar Widgets Column -->
         <div class="col-md-4">
-            <div class="card my-4">
-                <h5 class="card-header">Log in</h5>
-                <div class="card-body">
-                    <div class="input-group">
-                        <input type="text" class="from-control" placeholder="ID">
-                        <input type="text" class="from-control" placeholder="password">
-                        <span class="input-group-append">
-                            <button class="btn btn-secondary" type="button">log in</button>
-                        </span>
-                    </div>
-                </div>
-            </div>
+
             <!-- Search Widget -->
             <div class="card my-4">
                 <h5 class="card-header">Search</h5>
@@ -98,7 +137,8 @@
                             <ul class="list-unstyled mb-0">
                                 {% for category in category_list %}
                                     <li>
-                                         <a href="{{ category.get_absolute_url }}">{{ category.name }} ({{ category.post_set.count }})</a>
+                                        <a href="{{ category.get_absolute_url }}">{{ category.name }}
+                                            ({{ category.post_set.count }})</a>
                                     </li>
                                 {% endfor %}
                                 <li>

@@ -32,6 +32,14 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'blog',
+    'markdownx',
+    'crispy_forms',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'awesome_avatar',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -105,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
 TIME_ZONE = 'ASIA/Seoul'
 
@@ -116,10 +124,32 @@ USE_L10N = True
 USE_TZ = True
 
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
+
+ACCOUNT_EMAIL_REQUIRED = True
 
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '_media')
 MEDIA_URL = '/media/'
+
+from datetime import datetime
+MARKDOWNX_MEDIA_PATH = datetime.now().strftime('makrdownx/%Y/%m/%d')
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+LOGIN_REDIRECT_URL = '/blog/'
+
+AWESOME_AVATAR = {
+    'width': 100,
+    'height': 100,
+}

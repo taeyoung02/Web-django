@@ -1,6 +1,8 @@
 <!-- base.html과 연결 -->
 {% extends 'blog/base.html' %}
 
+{% load crispy_forms_tags %}
+
 {% block title %}{{ object.title }} - Blog{% endblock %}
 
 {% block content %}
@@ -23,24 +25,26 @@
     <!-- Date/Time -->
     <p>Posted on {{ object.created }}
         {% if request.user == object.author %}
-            <button type="button" class="btn btn-sm btn-outline-secondary float-right">EDIT</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary float-right"
+                    onclick="location.href='{{ object.get_update_url }}'">EDIT
+            </button>
         {% endif %}
     </p>
     <!-- Preview Image -->
     {% if object.head_image %}
-        <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+        <img class="img-fluid rounded" src="{{ object.head_image.url }}" alt="object.title">
     {% endif %}
 
     <!-- Post Content -->
-    {{ object.content }}
+    {{ object.get_markdown_content | safe }}
 
     <!-- Comments Form -->
     <div class="card my-4">
         <h5 class="card-header">Leave a Comment:</h5>
         <div class="card-body">
-            <form>
+            <form method="post" action="{{ object.get_absolute_url }}new_comment">{% csrf_token %} <!-- 보안상의 문제없이 서버에서 form을 사용 -->
                 <div class="form-group">
-                    <textarea class="form-control" rows="3"></textarea>
+                    {{ Comment_form | crispy }}
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
@@ -48,46 +52,19 @@
     </div>
 
     <!-- Single Comment -->
-    <div class="media mb-4">
-        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-        <div class="media-body">
-            <h5 class="mt-0">Commenter Name</h5>
-            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio,
-            vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec
-            lacinia congue felis in faucibus.
-        </div>
-    </div>
-
-    <!-- Comment with nested comments -->
-    <div class="media mb-4">
-        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-        <div class="media-body">
-            <h5 class="mt-0">Commenter Name</h5>
-            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio,
-            vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec
-            lacinia congue felis in faucibus.
-
-            <div class="media mt-4">
+    <div id="comment-list">
+        {% for comment in object.comment_set.all %}
+            <div class="media mb-4" id="comment-id-{{ comment.pk }}">  <!-- 댓글달린 화면으로 이동. model에서 이 id를 주소로 지정 -->
                 <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
                 <div class="media-body">
-                    <h5 class="mt-0">Commenter Name</h5>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras
-                    purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                    vulputate fringilla. Donec lacinia congue felis in faucibus.
+                    {% if comment.author == request.user %}
+                    <button class="btn btn-sm btn-info float-right">edit</button>
+                    <button class="btn btn-sm btn-warning float-right">delete</button>
+                    {% endif %}
+                    <h5 class="mt-0">{{ comment.author }}</h5>
+                    {{ comment.get_markdown_content | safe }}
                 </div>
             </div>
-
-            <div class="media mt-4">
-                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                <div class="media-body">
-                    <h5 class="mt-0">Commenter Name</h5>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras
-                    purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-                    vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </div>
-            </div>
-
-        </div>
+        {% endfor %}
     </div>
-
 {% endblock %}

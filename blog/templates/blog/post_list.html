@@ -2,10 +2,12 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
+    {% if user.is_authenticated %}
+        <button class="btn btn-primary btn-sm" onclick="location.href='/blog/create/'">New Post</button>
+    {% endif %}
 
      <h1 id="blog-list-title">
-        {% if category %}<small class="text-muted">: {{ category }}</small>{% endif %}
-        {% if tag %}<small class="text-muted">: #{{ tag }}</small>{% endif %}
+        {% if category    %}<small class="text-muted">: {{ category }}</small>{% endif %}
         {% if search_info %}<small class="text-muted">: {{ search_info }} ({{ object_list.count }})</small>{% endif %}
     </h1>
     <!-- Blog Post -->
@@ -26,7 +28,7 @@
                     <span class="badge badge-primary float-right">미분류</span>
                     {% endif %}
                     <h2 class="card-title">{{ p.title }}</h2>
-                    <p class="card-text">{{ p.content | truncatewords:30 }}</p>
+                    <p class="card-text">{{ p.get_markdown_content | safe | truncatewords:30 }}</p>
                     <a href="{{  p.get_absolute_url }}" class="btn btn-primary" id="read-{{ p.pk }}">Read More &rarr;</a>
                 </div>
                 <div class="card-footer text-muted">
