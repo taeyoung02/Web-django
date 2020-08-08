@@ -11,9 +11,8 @@
     <link rel="stylesheet" href="{% static 'blog/bootstrap/bootstrap.css' %}" media="screen">
     <link rel="stylesheet" href="{% static 'blog/_assets/css/custom.min.css' %}">
     <script src="https://kit.fontawesome.com/f284a7c950.js" crossorigin="anonymous"></script>
-
-
 </head>
+
 <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary" id="navbar">
     <div class="container">
         <a href="http://127.0.0.1:8000/blog" class="navbar-brand">고객 이탈 분석</a>
@@ -47,22 +46,15 @@
             </ul>
 
             <ul class="nav navbar-nav ml-auto">
-                {% if user.is_authenticated %}
+                {% if user.is_authenticated %}  {# 로그인된경우 #}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
                            id="download">{{ user }}<span
                                 class="caret"></span></a>
-                        <div class="dropdown-menu" aria-labelledby="download">
-                            {#                        <a class="dropdown-item" target="_blank" href="https://jsfiddle.net/bootswatch/3he50zsf/">Open#}
-                            {#                            in JSFiddle</a>#}
-                            {#                        <div class="dropdown-divider"></div>#}
-                            {#                        <a class="dropdown-item" href="../4/simplex/bootstrap.min.css" download>bootstrap.min.css</a>#}
-                            {#                        <a class="dropdown-item" href="../4/simplex/bootstrap.css" download>bootstrap.css</a>#}
-                            {#                        <div class="dropdown-divider"></div>#}
-                            {#                        <a class="dropdown-item" href="../4/simplex/_variables.scss" download>_variables.scss</a>#}
+                        <div class="dropdown-menu">
                             <a class="dropdown-item" href="/accounts/logout/">Log out</a>
                         </div>
-                        {% else %}
+                        {% else %} {# 로그인 안한경우 #}
                     <li class="nav-item">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loginModal">
                             {# target과 modal의 id가 맞아야 #}
@@ -88,11 +80,22 @@
                 </button>
             </div>
             <div class="modal-body">
-                <a role="button" class="btn btn-primary" href="{% provider_login_url 'google'%}"><i class="fab fa-google"></i> Log in with google</a>
+                <div class="row">
+                    <div class="col-md-6">
+                        <a role="button" class="btn btn-outline-primary" href="{% provider_login_url 'google' %}"><i
+                                class="fab fa-google"></i> Log in with google</a>
+                        <a role="button" class="btn btn-outline-info" href="/accounts/login/"><i
+                                class="far fa-envelope"></i> Log in with email</a>
+                    </div>
+                    <div class="col-md-6">
+                        <a role="button" class="btn btn-outline-info" href="/accounts/signup/"><i
+                                class="far fa-envelope"></i> Sign up with email</a>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
@@ -121,9 +124,9 @@
                 <h5 class="card-header">Search</h5>
                 <div class="card-body">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
+                        <input type="text" id="search-input" {# 키보드에서 뗄때 #}onkeyup="wait_for_enter()" class="form-control" placeholder="Search for...">
                         <span class="input-group-append">
-                <button class="btn btn-secondary" type="button">Go!</button>
+                <button class="btn btn-secondary" type="button" {# 마우스클릭할때 #}onclick="search_post()";>Go!</button>
               </span>
                     </div>
                 </div>
@@ -137,8 +140,7 @@
                             <ul class="list-unstyled mb-0">
                                 {% for category in category_list %}
                                     <li>
-                                        <a href="{{ category.get_absolute_url }}">{{ category.name }}
-                                            ({{ category.post_set.count }})</a>
+                                        <a href="{{ category.get_absolute_url }}">{{ category.name }} ({{ category.post_set.count }})</a>
                                     </li>
                                 {% endfor %}
                                 <li>
@@ -153,6 +155,18 @@
     </div>
 </div>
 
+<script>
+    function search_post(){
+        var search_value = document.getElementById('search-input').value;
+        location.href = '/blog/search/'+ search_value + "/";
+    }
+
+    function wait_for_enter(){
+        if (window.event.keyCode == 13){ {# 13 =enter #}
+            search_post()
+        }
+    }
+</script>
 
 <script src="{% static 'blog/_assets/js/jquery.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"

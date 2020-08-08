@@ -43,6 +43,9 @@ class Post(models.Model):
 
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.SET_NULL)
 
+    class Meta:
+        ordering = ['-created']
+
     # 제목 설정
     def __str__(self):
         return '{} :: {}'.format(self.title, self.author)

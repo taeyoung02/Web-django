@@ -6,13 +6,11 @@ from .forms import CommentForm
 from django.views.generic import ListView, DetailView, UpdateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
-# 밑에거 필요없이 위에 2줄로 가능
+from django.db.models import Q
 
 class PostList(ListView):
     model = Post
-
-    def get_queryset(self):
-        return Post.objects.order_by('-created')
+    paginate_by = 5
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(PostList, self).get_context_data(**kwargs)
@@ -20,6 +18,20 @@ class PostList(ListView):
         context['posts_without_category'] = Post.objects.filter(category=None).count()
         # category가 none인것만 걸러서 왼쪽에 갯수 저장
         return context
+
+
+class PostSearch(PostList):
+    def get_queryset(self):
+        q = self.kwargs['q']  # args:tuple, kwargs:dictionary
+        object_list = Post.objects.filter(Q(title__contains=q) | Q(content__contains=q))
+        # 제목과 내용 모두 검색
+        return object_list
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(PostSearch, self).get_context_data()  # super로 PostList갖다씀
+        context['search_info'] = 'Search "{}"'.format(self.kwargs['q'])  # 검색내용 보여주기위해
+        return context
+
 
 class PostCreate(LoginRequiredMixin, CreateView):
     model=Post

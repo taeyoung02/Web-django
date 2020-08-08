@@ -30,7 +30,7 @@ def create_post(title, content, author, category=None):
     return blog_post
 
 
-def create_comment(post, text='a comment', author = None):
+def create_comment(post, text='a comment', author=None):
     if author is None:
         author, is_created = User.objects.get_or_create(
             username='guest',
@@ -44,6 +44,7 @@ def create_comment(post, text='a comment', author = None):
     )
 
     return comment
+
 
 class TestModel(TestCase):
     def setUp(self):
@@ -82,7 +83,7 @@ class TestModel(TestCase):
         )
 
         self.assertEqual(Comment.objects.count(), 2)
-        self.assertEqual(post_000.comment_set.count(),2)
+        self.assertEqual(post_000.comment_set.count(), 2)
 
 
 class Testview(TestCase):
@@ -193,7 +194,6 @@ class Testview(TestCase):
 
         self.check_right_side(soup)
 
-
         # Comment
         comments_div = main.find('div', id='comment-list')
         self.assertIn(comment0.author.username, comments_div.text)
@@ -212,7 +212,6 @@ class Testview(TestCase):
 
         self.assertEqual(post_000.author, self.author_000)
         self.assertIn('EDIT', main.text)
-
 
     def test_post_list_byCategory(self):
         category_politics = create_category(name='정치/사회')
@@ -251,7 +250,6 @@ class Testview(TestCase):
         soup = BeautifulSoup(response.content, 'html.parser')
         main = soup.find('div', id='main-div')
 
-
     def test_post_update(self):
         post_000 = create_post(
             title='The first post',
@@ -267,7 +265,7 @@ class Testview(TestCase):
         soup = BeautifulSoup(response.content, 'html.parser')
         main = soup.find('div', id='main-div')
 
-        #edit시 author 못바꾸게
+        # edit시 author 못바꾸게
         self.assertNotIn('Created', main.text)
         self.assertNotIn('Author', main.text)
 
@@ -290,3 +288,58 @@ class Testview(TestCase):
 
         self.assertIn((post_000.title, main.text))
         self.assertIn('A test comment', main.text)
+
+    def test_pagination(self):
+        # pager가 작은경우
+        for i in range(0, 3):
+            post_000 = create_post(
+                title='The post {}'.format(i),
+                content='{}'.format(i),
+                author=self.author_000,
+            )
+
+        response = self.client.get('/blog/')
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main = soup.find('div', id='main-div')
+
+        self.assertNotIn('Older', soup.body.text)
+        self.assertNotIn('Newer', soup.body.text)
+
+        for i in range(3, 10):
+            post_000 = create_post(
+                title='The post {}'.format(i),
+                content='{}'.format(i),
+                author=self.author_000,
+            )
+
+        response = self.client.get('/blog/')
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main = soup.find('div', id='main-div')
+
+    def test_search(self):
+        post_000 = create_post(
+            title='stay Fool, stay hungry',
+            content='hello wolrd.',
+            author=self.author_000,
+        )
+
+
+        post_001 = create_post(
+            title='The',
+            content='hello.',
+            author=self.author_000,
+        )
+
+        response = self.client.get('/blog/search/stay Fool/')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        self.assertIn(post_000.title, soup.body.text)
+        self.assertNotIn(post_001.title, soup.body.text)
+
+        response = self.client.get('/blog/search/The/')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        self.assertIn(post_001.title, soup.body.text)
+        self.assertNotIn(post_000.title, soup.body.text)

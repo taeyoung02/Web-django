@@ -41,12 +41,15 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'awesome_avatar',
 
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'basecamp'
 ]
 
 MIDDLEWARE = [
@@ -136,6 +139,7 @@ AUTHENTICATION_BACKENDS = [
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 STATIC_URL = '/static/'
 
