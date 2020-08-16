@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'basecamp'
+    'basecamp',
 ]
 
 MIDDLEWARE = [
@@ -157,3 +157,9 @@ AWESOME_AVATAR = {
     'width': 100,
     'height': 100,
 }
+
+FILE_UPLOAD_HANDLERS =  ("django_excel.ExcelMemoryFileUploadHandler",
+                        "django_excel.TemporaryExcelFileUploadHandler")
+
+
+

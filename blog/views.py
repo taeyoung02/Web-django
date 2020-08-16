@@ -115,7 +115,7 @@ def change_avatar(request):
     else:
         form = AvatarChangeForm(instance=request.user.profile)
 
-    return render(request, 'template.html', {'form': form})
+    return render(request, 'templates.html', {'form': form})
 
 class PostUpdate(UpdateView):
     model = Post

@@ -325,7 +325,6 @@ class Testview(TestCase):
             author=self.author_000,
         )
 
-
         post_001 = create_post(
             title='The',
             content='hello.',
@@ -343,3 +342,5 @@ class Testview(TestCase):
         soup = BeautifulSoup(response.content, 'html.parser')
         self.assertIn(post_001.title, soup.body.text)
         self.assertNotIn(post_000.title, soup.body.text)
+
+    # venv/Scripts/activate
