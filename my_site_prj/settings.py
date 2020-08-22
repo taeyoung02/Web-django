@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'awesome_avatar',
 
 
     'django.contrib.admin',
@@ -153,10 +152,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = '/blog/'
 
-AWESOME_AVATAR = {
-    'width': 100,
-    'height': 100,
-}
 
 FILE_UPLOAD_HANDLERS =  ("django_excel.ExcelMemoryFileUploadHandler",
                         "django_excel.TemporaryExcelFileUploadHandler")

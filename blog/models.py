@@ -1,10 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User # User 객체 제공
-from django.db.models import OneToOneField
+from django.contrib.auth.models import User  # User 객체 제공
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdown
-from awesome_avatar.fields import AvatarField
-import io
 
 class Category(models.Model):
     name = models.CharField(max_length=25, unique=True)
@@ -58,10 +55,6 @@ class Post(models.Model):
 
     def get_update_url(self):
         return self.get_absolute_url() + 'update/'
-
-class Profile(models.Model):
-    user = OneToOneField(User, related_name='profile', default=1, on_delete=models.CASCADE)
-    avatar = AvatarField(upload_to='avatars', width=100, height=100)
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)  # post하나에 여러댓글 달 수 있다

@@ -1,8 +1,16 @@
 {% extends 'basecamp/base_full.html' %}
-
+{% load static %}
 {% block content %}
     <div class="container">
-        <h1>About me</h1>
-
+        <div class="row">
+            <div class="col-md-9">
+                <h1 class="my-3">About Website</h1>
+                <h3>머신러닝을 이용한 통신사 고객이탈방지 팀 입니다</h3>
+                <h5></h5>
+            </div>
+            <div class="col-md-3">
+                <img class="img-fluid" src="{% static 'basecamp/images/everytime.png' %}"/>
+            </div>
+        </div>
     </div>
 {% endblock %}

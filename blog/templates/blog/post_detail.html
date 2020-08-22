@@ -55,7 +55,7 @@
     <div id="comment-list">
         {% for comment in object.comment_set.all %}
             <div class="media mb-4" id="comment-id-{{ comment.pk }}">  <!-- 댓글달린 화면으로 이동. model에서 이 id를 주소로 지정 -->
-                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                <img class="d-flex mr-3 rounded-circle" src="https://api.adorable.io/avatars/285/{{ comment.author }}.png" alt="">
                 <div class="media-body">
                     {% if comment.author == request.user %}
                     <button class="btn btn-sm btn-info float-right">edit</button>

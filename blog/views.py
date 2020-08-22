@@ -1,6 +1,5 @@
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from .models import Post, Category, Profile  # . = 지금 폴더안
+from .models import Post, Category# . = 지금 폴더안
 # post = models.py의 post가져옴
 from .forms import CommentForm
 from django.views.generic import ListView, DetailView, UpdateView, CreateView
@@ -100,22 +99,7 @@ def new_comment(request, pk):
     else:
         return redirect('/blog/')
 
-class AvatarChangeForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['avatar']
 
-def change_avatar(request):
-    if request.method == 'POST':
-        form = AvatarChangeForm(request.POST, request.FILES,
-                                instance=request.user.profile)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/profile/')
-    else:
-        form = AvatarChangeForm(instance=request.user.profile)
-
-    return render(request, 'templates.html', {'form': form})
 
 class PostUpdate(UpdateView):
     model = Post
