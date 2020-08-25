@@ -9,3 +9,8 @@ def about_me(request):
         'basecamp/about_me.html',
     )
 
+def analysis(request):
+    return render(
+        request,
+        'basecamp/analysis.html',
+    )

@@ -18,6 +18,9 @@
 
             <ul class="nav navbar-nav ml-auto">
                 {% if user.is_authenticated %}  {# 로그인된경우 #}
+                    <li class="nav-item">
+                        <a class="nav-link" href="../analysis">데이터 분석</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
                            id="download">{{ user }}<span
@@ -25,7 +28,9 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="/accounts/logout/">Log out</a>
                         </div>
-                        {% else %} {# 로그인 안한경우 #}
+                    </li>
+
+                {% else %} {# 로그인 안한경우 #}
                     <li class="nav-item">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loginModal">
                             {# target과 modal의 id가 맞아야 #}

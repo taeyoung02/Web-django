@@ -38,33 +38,7 @@
     <!-- Post Content -->
     {{ object.get_markdown_content | safe }}
 
-    <!-- Comments Form -->
-    <div class="card my-4">
-        <h5 class="card-header">Leave a Comment:</h5>
-        <div class="card-body">
-            <form method="post" action="{{ object.get_absolute_url }}new_comment">{% csrf_token %} <!-- 보안상의 문제없이 서버에서 form을 사용 -->
-                <div class="form-group">
-                    {{ Comment_form | crispy }}
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        </div>
-    </div>
 
-    <!-- Single Comment -->
-    <div id="comment-list">
-        {% for comment in object.comment_set.all %}
-            <div class="media mb-4" id="comment-id-{{ comment.pk }}">  <!-- 댓글달린 화면으로 이동. model에서 이 id를 주소로 지정 -->
-                <img class="d-flex mr-3 rounded-circle" src="https://api.adorable.io/avatars/285/{{ comment.author }}.png" alt="">
-                <div class="media-body">
-                    {% if comment.author == request.user %}
-                    <button class="btn btn-sm btn-info float-right">edit</button>
-                    <button class="btn btn-sm btn-warning float-right">delete</button>
-                    {% endif %}
-                    <h5 class="mt-0">{{ comment.author }}</h5>
-                    {{ comment.get_markdown_content | safe }}
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+
+
 {% endblock %}

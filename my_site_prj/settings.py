@@ -25,7 +25,7 @@ SECRET_KEY = 'g+onpj*vcb4c28(he7cu*1^h!ywy0^c34_(7*^4eaqj45$*k^*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['3.35.19.80', '127.0.0.1']
 
 
 # Application definition
@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'basecamp',
+
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -141,7 +143,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, '_media')
 MEDIA_URL = '/media/'
 

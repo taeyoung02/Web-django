@@ -286,7 +286,7 @@ class Testview(TestCase):
         soup = BeautifulSoup(response.content, 'html.parser')
         main = soup.find('div', id='main-div')
 
-        self.assertIn((post_000.title, main.text))
+        self.assertIn(post_000.title, main.text)
         self.assertIn('A test comment', main.text)
 
     def test_pagination(self):

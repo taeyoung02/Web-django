@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-{% load static %}  {# bootstrap.css 가져옴 #}
+{% load static %}
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <!-- 이 html을 extend한 다른 html에 block title이 없으면 이것을 그대로 사용
-    만약 block title이 있다면 그것을 사용 -->
-    <title>{% block title %}Blog{% endblock %}</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" href="{% static 'blog/bootstrap/bootstrap.css' %}" media="screen">
     <link rel="stylesheet" href="{% static 'blog/_assets/css/custom.min.css' %}">
-    <script src="https://kit.fontawesome.com/f284a7c950.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 </head>
 <body>
 
@@ -45,7 +43,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Category Bar -->
+             <!-- Categories Widget -->
             <div class="card my-4" id="category-card">
                 <h5 class="card-header">Categories</h5>
                 <div class="card-body">
