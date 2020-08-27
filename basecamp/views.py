@@ -14,3 +14,4 @@ def analysis(request):
         request,
         'basecamp/analysis.html',
     )
+

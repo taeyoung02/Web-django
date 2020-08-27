@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdown
+from django.db import models
 
 
 class Category(models.Model):
@@ -20,17 +21,6 @@ class Category(models.Model):
         verbose_name_plural = 'categories'
 
 
-class Tag(models.Model):
-    name = models.CharField(max_length=40, unique=True)
-    slug = models.SlugField(unique=True, allow_unicode=True)
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return '/blog/tag/{}/'.format(self.slug)
-
-
 class Post(models.Model):
     title = models.CharField(max_length=30)
     content = MarkdownxField()
@@ -41,7 +31,6 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.SET_NULL)
-    tags = models.ManyToManyField(Tag, blank=True)
 
     class Meta:
         ordering = ['-created', ]
@@ -57,4 +46,10 @@ class Post(models.Model):
 
     def get_markdown_content(self):
         return markdown(self.content)
+
+
+class UploadFileModel(models.Model):
+    title = models.TextField(default='')
+    file = models.FileField(null=True)
+
 
