@@ -24,7 +24,7 @@ SECRET_KEY = 'g+onpj*vcb4c28(he7cu*1^h!ywy0^c34_(7*^4eaqj45$*k^*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['3.35.19.80', '127.0.0.1']
+ALLOWED_HOSTS = ['3.35.19.80', '127.0.0.1', 'predict-chrun.com']
 
 # Application definition
 
@@ -136,7 +136,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 
 from datetime import datetime
@@ -150,6 +150,6 @@ LOGIN_REDIRECT_URL = '/blog/'
 FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
                         "django_excel.TemporaryExcelFileUploadHandler")
 
-MEDIA_ROOT = os.path.join(BASE_DIR, '_media')
+MEDIA_ROOT = os.path.join(BASE_DIR, '_media/')
 MEDIA_URL = '/media/'
 

@@ -14,6 +14,7 @@ import os
 from django.http import HttpResponse, Http404
 import mimetypes
 
+
 class PostList(ListView):
     model = Post
     paginate_by = 5
@@ -57,36 +58,34 @@ def ml():
     import warnings
     warnings.filterwarnings("ignore")  # 경고창 무시.
 
-    from sklearn.preprocessing import MinMaxScaler
-
-    from sklearn.model_selection import cross_val_score, KFold
-    from sklearn.model_selection import GridSearchCV
-    from xgboost import plot_importance
-    from xgboost import XGBClassifier
-    # F2 score for gridSearchCV
-
-    from sklearn.metrics import fbeta_score
-    from sklearn.metrics import make_scorer
-
     # 원본 파일 불러오기
-    telcom = pd.read_excel("_media/dd.xlsx")
+    telcom = pd.read_excel("C:/telco-customer-churn/gwa_ver1.1.xlsx")
+    telcom1 = pd.read_excel("C:/telco-customer-churn/gwa_ver2.xlsx")
+
+    telcom = pd.concat([telcom, telcom1]);
 
     # 열 이름에 있는 띄어쓰기 제거
     telcom.rename(columns=lambda x: x.replace(' ', ''), inplace=True)
 
-
+    # 열 이름에 있는 띄어쓰기 제거
     # 요금항목명의 데이터가 가지는 띄어쓰기 값 삭제.
-    telcom['요금항목명'] = telcom['요금항목명'].replace('임대이용료                              ', '임대이용료')
-    telcom['요금항목명'] = telcom['요금항목명'].replace('유지보수료                              ', '유지보수료')
-    telcom['요금항목명'] = telcom['요금항목명'].replace('장비구매료                              ', '장비구매료')
-    telcom['요금항목명'] = telcom['요금항목명'].replace('신규설치비                              ', '신규설치비')
-    telcom['요금항목명'] = telcom['요금항목명'].replace('컨설팅료                                ', '컨설팅료')
-    telcom['요금항목명'] = telcom['요금항목명'].replace('신규설치비                     ', '신규설치비')
+    if '임대이용료                              ' in telcom['요금항목명'].unique():
+        telcom['요금항목명'] = telcom['요금항목명'].replace('임대이용료                              ', '임대이용료')
+    if '유지보수료                              ' in telcom['요금항목명'].unique():
+        telcom['요금항목명'] = telcom['요금항목명'].replace('유지보수료                              ', '유지보수료')
+    if '장비구매료                              ' in telcom['요금항목명'].unique():
+        telcom['요금항목명'] = telcom['요금항목명'].replace('장비구매료                              ', '장비구매료')
+    if '신규설치비                              ' in telcom['요금항목명'].unique():
+        telcom['요금항목명'] = telcom['요금항목명'].replace('신규설치비                              ', '신규설치비')
+    if '컨설팅료                                ' in telcom['요금항목명'].unique():
+        telcom['요금항목명'] = telcom['요금항목명'].replace('컨설팅료                                ', '컨설팅료')
+    if '신규설치비                     ' in telcom['요금항목명'].unique():
+        telcom['요금항목명'] = telcom['요금항목명'].replace('신규설치비                     ', '신규설치비')
 
     # 데이터에 오류있는 17년 7월 데이터 삭제
-    idx = telcom[telcom['청구일자'] == 20170710].index
-    telcom = telcom.drop(idx)
+    # 들어오는 데이터에는 17년 7월이 없을 것이므로 삭제
 
+    # 이부분은 애초에 존재하는 columns이므로 if문 안함
     telcom.drop(['선납금액', '기타요금', '연체료', '감액료',
                  '당월금액', '청구금액'], axis='columns', inplace=True)
 
@@ -100,6 +99,9 @@ def ml():
     telcom = telcom.drop(idx)
     # 연속성 없는 열과 NULL 삭제
     telcom = telcom.reset_index()[telcom.columns]  # 인덱스 재설정
+
+    # 청구일자에서 미리 최대값을 저장
+    date_max = telcom['청구일자'].max()
 
     # 차월증감액 삭제
     del telcom['차월증감액']
@@ -148,14 +150,15 @@ def ml():
     telcom = pd.merge(telcom, count)
 
     # 서비스번호별 상품갯수 추가
+
     def func(row):
-        if row['청구일자'] >= 20200110:
+        if row['청구일자'] >= date_max:
             return 0
         else:
             return 1
 
     telcom['이탈여부'] = telcom.apply(func, axis=1)
-    # 마지막 데이터의 청구일 기준 20200110이 시작하지않으면 이탈했다 간주. 이탈여부 1로 표시.
+    # 마지막 데이터의 청구일 기준 가장 큰 숫자 시작하지않으면 이탈했다 간주. 이탈여부 1로 표시.
 
     # 이탈한 달 특성 추가(머신러닝돌릴때는 사용하지않고 분석시에 사용할 것)
     telcom['청구일자'] = telcom['청구일자'].astype(str)
@@ -223,6 +226,7 @@ def ml():
     del telcom['계약자명(가입자명)']
     del telcom['서비스번호(TRIM)']
     del telcom['할인율']
+
     # 그리드서치를위한
     features = ['평균금액', '평균할인율', '상품갯수', '유지기간', 'U/N',
                 '요금항목명_관제서비스료', '요금항목명_유지보수료', '요금항목명_임대이용료', '모상품명_CCTV장비',
@@ -234,14 +238,15 @@ def ml():
                 '영업본부명_전북고객본부', '영업본부명_제주고객본부', '영업본부명_충남고객본부', '영업본부명_충북고객본부']
 
     label = '이탈여부'
-    # with open(path, 'rb') as pickled:
-    #     data = pickle.load(pickled)
-    # loaded_model = pickle.load(open(filename, 'rb'))
-    # result = loaded_model.score(X_test, Y_test)
-    # print(result)
 
 
-    telcom.to_excel("_media/output.xlsx")
+    import joblib
+
+    model = joblib.load('model/XGB2.pkl')
+    telcom['이탈여부'] = model.predict(telcom[features].values)
+
+    telcom.to_excel("_media/Predict_output.xlsx")
+
 
 def upload_file(request):
     if request.method == 'POST':
@@ -256,7 +261,6 @@ def upload_file(request):
     return render(
         request, 'blog/upload.html', {'form': form}
     )
-
 
 
 class PostUpdate(UpdateView):
