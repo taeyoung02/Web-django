@@ -2,15 +2,12 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-    {% if user.is_authenticated %}
         <button class="btn btn-primary btn-sm" onclick="location.href='/blog/upload/'">Upload</button>
-    {% endif %}
 
     <h1 id="blog-list-title">
         {% if category %}<small class="text-muted">: {{ category }}</small>{% endif %}
         {% if search_info %}<small class="text-muted">: {{ search_info }} ({{ object_list.count }})</small>{% endif %}
     </h1>
     <!-- Blog Post -->
+
 {% endblock %}
-
-
